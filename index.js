@@ -23,24 +23,43 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        // await client.connect();
-
+        await client.connect();
 
 
         const roomCollection = client.db('hotelDB').collection('rooms');
+        
+        // app.post('/rooms', async (req, res) => {
+        //     const newSpot = req.body;
+        //     console.log(newSpot);
+        //     const result = await roomCollection.insertOne(newSpot);
+        //     res.send(result);
+        //   })
 
         app.get('/rooms', async (req, res) => {
-            const cursor = roomCollection.find();
+            const cursor = roomCollection.find({});
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get('/rooms/:id', async (req, res) => {
+            const roomId = req.params.id;
+            try {
+              const room = await roomCollection.findOne({ _id: roomId });
+              if (room) {
+                res.json(room);
+              } else {
+                res.status(404).send('Room not found');
+              }
+            } catch (error) {
+              res.status(500).send('Error room');
+            }
+          });
 
-        app.delete('/room/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const result = await roomCollection.deleteOne(query);
-            res.send(result);
-        })
+        // app.delete('/rooms/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: id }
+        //     const result = await roomCollection.deleteOne(id);
+        //     res.send(result);
+        // })
 
 
         // Send a ping to confirm a successful connection
