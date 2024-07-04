@@ -54,12 +54,13 @@ async function run() {
             }
           });
 
-        // app.delete('/rooms/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: id }
-        //     const result = await roomCollection.deleteOne(id);
-        //     res.send(result);
-        // })
+
+        app.delete('/rooms/:id', async (req, res) => {
+            const roomId = req.params.id;
+            const query = { _id: roomId }
+            const result = await roomCollection.deleteOne(query);
+            res.send(result);
+        })
 
 
         // Send a ping to confirm a successful connection
